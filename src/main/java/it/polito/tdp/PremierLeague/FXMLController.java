@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -35,7 +36,7 @@ public class FXMLController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbSquadra"
-    private ComboBox<?> cmbSquadra; // Value injected by FXMLLoader
+    private ComboBox<Team> cmbSquadra; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
     private TextField txtN; // Value injected by FXMLLoader
@@ -48,17 +49,21 @@ public class FXMLController {
 
     @FXML
     void doClassifica(ActionEvent event) {
-
+     Team s = cmbSquadra.getValue();
+     txtResult.appendText(this.model.squadreBattute(s.getTeamID())+"\n");
+     txtResult.appendText(this.model.squadreMigliori(s.getTeamID()));
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+     this.model.creaGrafo();
+     txtResult.appendText("Grafo creato con "+this.model.nVertici()+" vertici e "+ this.model.nArchi()+ " archi! \n");
     }
 
     @FXML
     void doSimula(ActionEvent event) {
-
+     int N = Integer.parseInt(txtN.getText());
+     int X = Integer.parseInt(txtX.getText());
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -74,5 +79,8 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	cmbSquadra.getItems().clear();
+    	for(Team s : this.model.getSquadre())
+    		cmbSquadra.getItems().add(s);
     }
 }

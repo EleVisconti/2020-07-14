@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import it.polito.tdp.PremierLeague.model.Action;
 import it.polito.tdp.PremierLeague.model.Match;
 import it.polito.tdp.PremierLeague.model.Player;
@@ -111,5 +113,63 @@ public class PremierLeagueDAO {
 			return null;
 		}
 	}
+	
+	public void setPunteggioVinte(int squadraID, Map<Integer, Team> squadre) {
+		String sql = "SELECT COUNT(*) AS vinte "
+				+ "FROM matches "
+				+ "WHERE (ResultOfTeamHome = '1' AND TeamHomeID = ?) OR (ResultOfTeamHome = '-1' AND TeamAwayID = ?)";
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, squadraID);
+			st.setInt(2, squadraID);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+
+				int punteggio = res.getInt("vinte")*3; 
+				Team s = squadre.get(squadraID);
+				s.setPunteggio(s.getPunteggio()+punteggio);
+
+
+			}
+			conn.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+		
+		
+	}
+	
+	public void setPunteggioPari(int squadraID, Map<Integer, Team> squadre) {
+		String sql = "SELECT COUNT(*) AS pari "
+				+ "FROM matches "
+				+ "WHERE (ResultOfTeamHome = '0' AND TeamHomeID = ?) OR (ResultOfTeamHome = '0' AND TeamAwayID = ?)";
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, squadraID);
+			st.setInt(2, squadraID);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+
+				int punteggio = res.getInt("pari");
+				Team s = squadre.get(squadraID);
+				s.setPunteggio(s.getPunteggio()+punteggio);
+
+			}
+			conn.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+		
+		
+	}
+	
 	
 }
